@@ -110,18 +110,21 @@ bool NRKFlat::Filter(const unsigned int key)
 int NRKFlat::Insert(const unsigned int key)
 {
 	// Write your code
+	return 1;
 	
 }
 
 int NRKFlat::Remove(const unsigned int key)
 {
 	// Write your code
+	return 1;
 
 }
 
 int NRKFlat::Search(const unsigned int key)
 {
 	// Write your code
+	return 1;
 
 }
 
