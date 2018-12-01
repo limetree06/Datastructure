@@ -3,19 +3,19 @@
 
 #include <iostream>
 #include "FlatHash.h"
+using namespace std;
+
 
 class HierarchyHash
 {
 private:
 	unsigned int** hashtable;
-	// Variable for overflow handling
 	enum overflow_handle flag;
-	// Size(range) of full hash table. Initially 1000
 	unsigned int table_size;
-	// Size of subhash table. Fixed by 100
 	unsigned int sub_table_size;
-	// Nums of keys
 	unsigned int num_of_keys;
+    int keycount=0;
+    int resizes=0;
 
 public:
 	HierarchyHash(enum overflow_handle _flag);
@@ -67,43 +67,37 @@ HierarchyHash::~HierarchyHash()
 
 unsigned int HierarchyHash::GetAllocatedSize()
 {
-	// Write your code
+	return keycount;
 
 }
 
 int HierarchyHash::Insert(const unsigned int key)
 {
-	// Write your code
+	return 1;
 
 }
 
 int HierarchyHash::Remove(const unsigned int key)
 {
-	// Write your code
+	return 1;
 
 }
 
 int HierarchyHash::Search(const unsigned int key)
 {
-	// Write your code
+	return 1;
 
 }
 
 void HierarchyHash::ClearTombstones()
 {
 	// Write your code
-	
+
 }
 
 void HierarchyHash::Print()
 {
-	// Print valid key pair for each sub hash table - subtable_id:[index1:key1,index2:key2]
-	// Seperate each sub table by endl
-	// e.g., 0:[1:3,3:7,5:1]
-	//       1:[101:2,192:10]
-	//       9:[902:90,938:82]
-
-	// Write your code
+	cout << "[]" <<endl;
 
 
 }
