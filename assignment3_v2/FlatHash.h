@@ -115,6 +115,7 @@ int FlatHash::Remove(const unsigned int key){
 }
 
 int FlatHash::Search(const unsigned int key){
+	int check = 1;
 	int j=1;
 	int timecost=1;
 	int fflag=0;
@@ -123,7 +124,8 @@ int FlatHash::Search(const unsigned int key){
         while (1){
         if( bucket[realkey] == key ) break;
             realkey = (key+j) % table_size;
-            timecost++; j++; }}
+            timecost++; j++; check ++;
+        if(check == table_size) return 0; }}
 
 	else{
 	    while (1){
@@ -133,17 +135,17 @@ int FlatHash::Search(const unsigned int key){
             if( j > (table_size-1)) {fflag=1; realkey = key%table_size; break;}}
             j=0;
             while(fflag == 1){
-                if( bucket[realkey] == key)break;
+                if( bucket[realkey] == key) break;
                     realkey = (key+j) % table_size;
-                    timecost++; j++; }}
+                    timecost++; j++; check ++;
+                if(check == table_size) return 0;}}
 
     return timecost;
     }
 
 void FlatHash::ClearTombstones(){
 	for (int i=0; i < table_size; i++){
-        bucket[i] > 1000000;
-        bucket[i] = 0;}
+        if(bucket[i] > 1000000) bucket[i] = 0;}
 
 	int arr[table_size];
         for (int i=0; i < table_size; i++){arr[i] = bucket [i];}
