@@ -1,11 +1,3 @@
-//
-// AdjacencyListDirectedGraph.h  (Version 1.0)
-//
-// CSE221 Data Structure, Fall 2018
-//
-// Original file created by Tsz-Chiu Au
-//
-
 #ifndef ASSIGNMENT5_ADJACENCYLISTDIRECTEDGRAPH_H
 #define ASSIGNMENT5_ADJACENCYLISTDIRECTEDGRAPH_H
 
@@ -17,15 +9,7 @@ using namespace std;
 
 template<typename V, typename E>
 class AdjacencyListDirectedGraph {
-
-  // ---------------------------------------------------------------------------------
-  // You *cannot* add any additional public or private member functions in this class.
-  // You *cannot* add any additional public or private member variables in this class.
-  // ---------------------------------------------------------------------------------
-
 public:
-
-  // Define public data types of Vertex and Edge and the associated iterators.
 
   class Vertex;
   class Edge;
@@ -38,10 +22,6 @@ public:
   typedef typename EdgeList::const_iterator EdgeConstItor;
 
 private:
-
-  // Define private data types of VertexObject and EdgeObject and the associated iterators.
-  // The type of IncidenceEdgesList and its iterator are defined as well.
-
   struct VertexObject;
   struct EdgeObject;
 
@@ -53,9 +33,7 @@ private:
   typedef typename EdgeObjectList::iterator EdgeObjectItor;
   typedef typename IncidenceEdgesList::iterator IncidenceEdgesItor;
 
-  /*
-   * VertexObject stores data of a vertex.
-   */
+
   struct VertexObject {
     V elt;                             // the element stored at this vertex
     VertexObjectItor pos;              // position in vertex_collection
@@ -64,9 +42,6 @@ private:
     VertexObject(V _elt) : elt(_elt) {}  // pos and inc_edges_pos are initially "NULL".
   };
 
-  /*
-   * EdgeObject stores data of an edge.
-   */
   struct EdgeObject {
     E elt;                          // the element stored at this edge
     Vertex origin_vertex;           // the vertex at the origin
@@ -78,276 +53,279 @@ private:
     EdgeObject(const Vertex& v, const Vertex& w, E _elt) : origin_vertex(v), dest_vertex(w), elt(_elt) {} // pos origin_inc_edges_pos, and dest_inc_edges_pos are initially "NULL".
   };
 
-  // ---------------------------------------------------------------------------------
-  // This class should contain the following three member variables only:
-  // vertex_collection, edge_collection, and inc_edges_collection
-  // You are not allowed to define any other member variables (public or private).
-  // ---------------------------------------------------------------------------------
-
   VertexObjectList vertex_collection;
   EdgeObjectList edge_collection;
   IncidenceEdgesList inc_edges_collection;
 
 public:
 
-  /*
-   * Vertex is a position class of a vertex in AdjacencyListDirectedGraph.
-   * Internally, a vertex is a pointer to an entry in vertex_collection.
-   */
   class Vertex {
 
     VertexObject *v_obj;
 
   public:
-
-    /*
-     * The constructor of Vertex. This subsumes the default constructor.
-     *
-     * v - a pointer to a VertexObject
-     */
     Vertex(VertexObject* v = NULL) : v_obj(v) {}
-
-
-    /*
-     * Return the element stored at this vertex.
-     */
     V& operator*() const {
+            if (v_obj == NULL) throw runtime_error("NULL pointer.");
+            return v_obj->elt; }
 
-    }
-
-    /*
-     * Return a list of edges incident to this vertex.
-     */
     EdgeList incidentEdges() const {
+            if (v_obj == NULL) throw runtime_error("NULL pointer.");
+            return *(v_obj->inc_edges_pos); }
 
-    }
 
-    /*
-     * Check whether a vertex is adjacent to this vertex.
-     * This means whether there is an edge that has this vertex
-     * and the given vertex as the end points.
-     *
-     * v - the given vertex
-     */
     bool isAdjacentTo(const Vertex& v) const {
+        EdgeList edge = v.incidentEdges();
+        EdgeItor lists= edge.begin();
+        int i=0;
+        if (v_obj == NULL || v.v_obj == NULL) throw runtime_error("NULL");
 
 
-    }
+        while(lists != edge.end() || i <10000){
+            if ((*lists).origin() == *this && (*lists).dest() == v) return true;
+            if ((*lists).origin() == v && (*lists).dest() == *this) return true;
+            i++;
+            lists++;
+        }
 
-    /*
-     * Check whether there is a directed edge connecting this vertex to the given vertex.
-     *
-     * v - the given vertex
-     */
+      return false;
+}
+
     bool isOutgoingTo(const Vertex& v) const {
+        EdgeList edge = incidentEdges();
+        EdgeItor lists= edge.begin();
+        int i=0;
 
+        if (v_obj == NULL || v.v_obj == NULL) throw runtime_error("NULL");
+
+        while(lists != edge.end()||i<10000){
+            if ((*lists).dest() == v) return true;
+            i++;
+            lists++;
+        }
+
+      return false;
     }
 
-    /*
-     * Return a directed edge connecting this vertex to the given vertex.
-     * If the directed edge does not exist, throw an exception.
-     *
-     * v - the given vertex
-     * Return the directed edge connecting this vertex to the given vertex.
-     */
+
     Edge outgoingEdge(const Vertex& v) const {
+        EdgeList edge = incidentEdges();
+        EdgeItor lists= edge.begin();
+        int counts=0;
+        if (v_obj == NULL || v.v_obj == NULL) throw runtime_error("NULL");
 
+
+        while(lists != edge.end()||counts <10000){
+            if ((*lists).dest() == v) return *lists;
+            counts++;
+            lists++;
+        }
     }
 
-    /*
-     * Return the set of all directed edges connecting this vertex to any vertex.
-     */
+
     EdgeList outgoingEdges() const {
 
+        EdgeList edge = incidentEdges();
+        EdgeItor lists= edge.begin();
+        EdgeList add;
+        int i=0;
+
+        while(lists != edge.end() || i<10000){
+            if((*lists).e_obj->origin_vertex == *this){add.push_back(*lists); i++; }}
+
+      return add;
     }
 
-    /*
-     * Check whether this vertex is the same as the given vertex
-     *
-     * v - the given vertex
-     * Return true if this vertex is the same as the given vertex
-     */
+
     bool operator==(const Vertex& v) const {
-
+        if (v_obj == NULL || v.v_obj == NULL) throw runtime_error("NULL");
+        return v_obj == v.v_obj;
     }
 
-    /*
-     * Declare friend to AdjacencyListDirectedGraph so that
-     * AdjacencyListDirectedGraph can access to the private
-     * member variables of this class.
-     */
+
     friend class AdjacencyListDirectedGraph<V,E>;
   };
 
-  /*
-   * Edge is a position class of an edge in AdjacencyListDirectedGraph.
-   * Internally, an edge is a pointer to an entry in edge_collection.
-   */
+
   class Edge {
 
     EdgeObject *e_obj;
 
   public:
 
-    /*
-     * The constructor of Edge. This subsumes the default constructor.
-     *
-     * v - a pointer to a EdgeObject
-     */
     Edge(EdgeObject* e = NULL) : e_obj(e) {}
 
-    /*
-     * Return the element stored at this edge.
-     */
     E& operator*() const {
+        if (e_obj == NULL) throw runtime_error("NULL");
+        return e_obj->elt;}
 
-    }
 
-    /*
-     * Return the vertices of this directed edge.
-     * The first element of the vertex list is the vertex of the origin.
-     * The second element of the vertex list is the vertex of the destination.
-     */
     VertexList endVertices() const {
+        VertexList ver;
+
+        if (e_obj == NULL) throw runtime_error("NULL");
+
+        ver.push_back(e_obj->dest_vertex);
+        ver.push_back(e_obj->origin_vertex);
+        return ver;
 
     }
 
-    /*
-     * Return the vertex of this edge that is different from the given vertex.
-     * If the given vertex is origin, return destination.
-     * If the given vertex is destination, return origin.
-     * If the given vertex is neither origin nor destination, throw an exception.
-     *
-     * v - the given vertex
-     * Return the other vertex of this edge
-     */
+
     Vertex opposite(const Vertex& v) const {
 
+        if(e_obj->origin_vertex == v) return e_obj->dest_vertex;
+
+        else if(e_obj->dest_vertex == v) return e_obj->origin_vertex;
+
+        else throw runtime_error("opposite x ");
+
     }
 
-    /*
-     * Check whether a given edge is adjacent to this edge.
-     * This means that whether the given edge and this edge
-     * shared a vertex.
-     *
-     * edge - the given edge
-     * Return true if the given edge is adjacent to this edge.
-     */
+
     bool isAdjacentTo(const Edge& edge) const {
+        if(e_obj->origin_vertex == edge.e_obj->origin_vertex) return true;
+
+        else if(e_obj->dest_vertex == edge.e_obj->origin_vertex) return true;
+
+        else if(e_obj->dest_vertex == edge.e_obj->dest_vertex) return true;
+
+        else if(e_obj->origin_vertex == edge.e_obj->dest_vertex) return true;
+
+        else return false;
 
     }
 
-    /*
-     * Check whether a vertex is incident on this edge.
-     * This means that whether the vertex is a vertex of this edge.
-     *
-     * v - the given vertex
-     * Return true if the given vertex is incident to this edge.
-     */
+
     bool isIncidentOn(const Vertex& v) const {
 
+        if(e_obj->origin_vertex == v) return true;
+
+        else if (e_obj->dest_vertex == v) return true;
+
+        else return false;
+
     }
 
-    /*
-     * Return the vertex at the origin of this edge.
-     */
+
     Vertex origin() const {
+        if (e_obj == NULL) throw runtime_error("NULL ");
 
+        return e_obj->origin_vertex;
     }
 
-    /*
-     * Return the vertex at the destination of this edge.
-     */
     Vertex dest() const {
+        if (e_obj == NULL) throw runtime_error("NULL ");
 
+        return e_obj->dest_vertex;
     }
 
-    /*
-     * Return true if this is a directed edge.
-     * In this class, it should always return true.
-     */
     bool isDirected() const {
+        if (e_obj == NULL) throw runtime_error("NULL ");
 
+        else if (e_obj->origin_vertex.v_obj == NULL) return false;
+
+        else if (e_obj->dest_vertex.v_obj == NULL) return false;
+
+        return true;
     }
 
-    /*
-     * Check whether this edge is the same as the given edge.
-     *
-     * edge - the given edge
-     * Return true if this edge is the same as the given edge.
-     */
+
     bool operator==(const Edge& edge) const {
+        if (e_obj == NULL) throw runtime_error("NULL ");
 
+        return edge.e_obj == e_obj;
     }
 
-    /*
-     * Declare friend to AdjacencyListDirectedGraph so that
-     * AdjacencyListDirectedGraph can access to the private
-     * member variables of this class.
-     */
     friend class AdjacencyListDirectedGraph<V,E>;
   };
 
 
 public:
 
-  /*
-   * Return the list of vertices in this graph.
-   */
-  VertexList vertices() {
 
+    VertexList vertices() {
+        VertexList vv;
+        VertexObjectItor lists = vertex_collection.begin();
+        int i=0;
+
+            while(lists != vertex_collection.end()||i<10000){
+                Vertex vvvv;
+                VertexObject& vo = (*lists);
+                vvvv.v_obj = &vo;
+                i++;
+                vv.push_back(vvvv);
+                lists++;
+            }
+
+        return vv;
   }
 
-  /*
-   * Return the list of edges in this graph.
-   */
+
   EdgeList edges() {
+        EdgeList ee;
+        EdgeObjectItor lists = edge_collection.begin();
+        int i=0;
+
+            while(lists != edge_collection.end()||i<10000){
+                Edge eeee;
+                EdgeObject& eo = (*lists);
+                i++;
+                eeee.e_obj = &eo;
+                ee.push_back(eeee);
+                lists++;
+            }
+
+        return ee;
 
   }
 
-  /*
-   * Add a new vertex to this graph.
-   *
-   * x - the element to be stored in the new vertex.
-   * Return the newly created vertex.
-   */
-  Vertex insertVertex(const V& x) {
 
-  }
+Vertex insertVertex(const V& x){
+            vertex_collection.push_back(VertexObject(x));
+            VertexObjectItor itor = --vertex_collection.end();
+            itor->pos = itor;
+            inc_edges_collection.push_back(EdgeList());
+            itor->inc_edges_pos = --inc_edges_collection.end();
+            return Vertex(&(*itor));
+        }
 
-  /*
-   * Add a new edge to this graph. Throw an exception
-   * if an edge has already existed between v and w.
-   *
-   * v - the vertex at the origin
-   * w - the vertex at the destination
-   * x - the element to be stored in the new edge.
-   * Return the newly created edge.
-   */
-  Edge insertDirectedEdge(const Vertex& v, const Vertex& w, E x) {
 
-  }
 
-  /*
-   * Remove a vertex from this graph. All edges that contain
-   * v as one of their vertices are also removed.
-   *
-   * v - a vertex
-   */
-  void eraseVertex(const Vertex& v) {
+        Edge insertDirectedEdge(const Vertex& v, const Vertex& w, E x){
+            if(v.isOutgoingTo(w)) throw runtime_error("ERROR");
+            edge_collection.push_back(EdgeObject(v, w, x));
+            EdgeObjectItor itor = --edge_collection.end();
+            itor->pos = itor ;
+            Edge tempedge(&(*itor));
+            (*(v.v_obj->inc_edges_pos)).push_back(tempedge);
+            (*(w.v_obj->inc_edges_pos)).push_back(tempedge);
+            itor->origin_inc_edges_pos = --(*(v.v_obj->inc_edges_pos)).end();
+            itor->dest_inc_edges_pos = --(*(w.v_obj->inc_edges_pos)).end();
+            return tempedge;
+        }
 
-  }
+        void eraseVertex(const Vertex& v){
+            if (v.v_obj == NULL) throw runtime_error("NULL pointer.");
+            for (VertexObjectItor i = vertex_collection.begin(); i != vertex_collection.end(); ++i){
+                if (v.v_obj == &(*i))
+                    vertex_collection.erase(i);
+            }
+            EdgeList temp = v.incidentEdges();
+            for (EdgeItor i = temp.begin(); i != temp.end() ; ++i){
+                eraseEdge(*i);
+            }
+            delete v.v_obj;
+        }
 
-  /*
-   * Remove an edge from this graph.
-   *
-   * e - an edge
-   */
-  void eraseEdge(const Edge& e) {
-
-  }
+        void eraseEdge(const Edge& e){
+            if (e.e_obj == NULL) throw runtime_error("NULL pointer.");
+            edge_collection.erase(e.e_obj->pos);
+            (*(e.e_obj->origin_vertex.v_obj->inc_edges_pos)).erase(e.e_obj->origin_inc_edges_pos);
+			(*(e.e_obj->dest_vertex.v_obj->inc_edges_pos)).erase(e.e_obj->dest_inc_edges_pos);
+			delete e.e_obj;
+        }
 
 };
-
-
 #endif //ASSIGNMENT5_ADJACENCYLISTDIRECTEDGRAPH_H
+
