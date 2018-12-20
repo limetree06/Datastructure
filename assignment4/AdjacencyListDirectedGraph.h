@@ -306,15 +306,25 @@ Vertex insertVertex(const V& x){
         }
 
         void eraseVertex(const Vertex& v){
-            if (v.v_obj == NULL) throw runtime_error("NULL pointer.");
-            for (VertexObjectItor i = vertex_collection.begin(); i != vertex_collection.end(); ++i){
-                if (v.v_obj == &(*i))
-                    vertex_collection.erase(i);
-            }
+            int i=0, j=0;
+            if (v.v_obj == NULL) throw runtime_error("NULL");
+
+            VertexObjectItor veritor = vertex_collection.begin();
             EdgeList temp = v.incidentEdges();
-            for (EdgeItor i = temp.begin(); i != temp.end() ; ++i){
-                eraseEdge(*i);
+            EdgeItor editor = temp.begin();
+
+            while(veritor != vertex_collection.end()||i<10000){
+                i++;
+                veritor++;
+                if (v.v_obj == &(*veritor)) vertex_collection.erase(veritor);
             }
+
+            while(editor != temp.end()||j<10000){
+                j++;
+                editor++;
+                eraseEdge(*editor);
+            }
+
             delete v.v_obj;
         }
 
